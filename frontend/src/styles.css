@@ -22,7 +22,7 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 32px 16px 48px;
 }
@@ -39,6 +39,21 @@ body {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #ffffff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+  gap: 20px;
+  align-items: start;
+}
+
+.left-column {
+  min-width: 0;
+}
+
+.right-column {
+  min-height: 360px;
 }
 
 label {
@@ -102,11 +117,14 @@ button:disabled {
 }
 
 .result {
-  margin-top: 24px;
   padding: 18px;
   border: 1px solid #dbeafe;
   border-radius: 10px;
   background: #eff6ff;
+}
+
+.placeholder {
+  color: #6b7280;
 }
 
 .result-image {
@@ -133,4 +151,10 @@ button:disabled {
 
 .footer-meta p {
   margin: 4px 0;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
 }
