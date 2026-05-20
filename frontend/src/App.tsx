@@ -1,5 +1,5 @@
 import { FormEvent, useMemo, useState } from "react";
-import { NailAnalysisResponse, submitAnalysisDirectMimo } from "./api";
+import { DEFAULT_USER_PROMPT, NailAnalysisResponse, submitAnalysisDirectMimo } from "./api";
 
 function toPreviewUrl(file: File | null): string | null {
   return file ? URL.createObjectURL(file) : null;
@@ -11,6 +11,7 @@ export default function App() {
   const [apiKey, setApiKey] = useState("");
   const [mimoBaseUrl, setMimoBaseUrl] = useState("https://token-plan-cn.xiaomimimo.com/v1");
   const [mimoModel, setMimoModel] = useState("mimo-v2.5");
+  const [analysisPrompt, setAnalysisPrompt] = useState(DEFAULT_USER_PROMPT);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<NailAnalysisResponse | null>(null);
@@ -39,7 +40,8 @@ export default function App() {
         nailImage,
         apiKey.trim(),
         mimoModel.trim() || "mimo-v2.5",
-        mimoBaseUrl.trim()
+        mimoBaseUrl.trim(),
+        analysisPrompt
       );
       setAnalysis(payload);
     } catch (submitError) {
@@ -79,6 +81,14 @@ export default function App() {
             <option value="mimo-v2.5">mimo-v2.5</option>
             <option value="mimo-v2-omni">mimo-v2-omni</option>
           </select>
+        </label>
+        <label>
+          分析需求（可编辑）
+          <textarea
+            value={analysisPrompt}
+            rows={5}
+            onChange={(event) => setAnalysisPrompt(event.target.value)}
+          />
         </label>
 
         <label>

@@ -73,6 +73,14 @@ select {
   border-radius: 6px;
 }
 
+textarea {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  resize: vertical;
+  font-family: inherit;
+}
+
 button {
   width: 180px;
   height: 40px;
