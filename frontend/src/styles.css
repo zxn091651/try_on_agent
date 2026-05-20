@@ -4,6 +4,10 @@
   background-color: #f8fafc;
 }
 
+html {
+  background-color: #d9e0db;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -11,7 +15,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #d9e0db;
   position: relative;
   overflow-x: hidden;
   overscroll-behavior-y: none;
@@ -172,10 +176,12 @@ button:disabled {
 
 @media (max-width: 960px) {
   body::before {
-    top: -100lvh;
-    height: 300lvh;
-    background-size: cover;
-    background-position: center center;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100lvh;
+    background-size: contain;
+    background-position: center top;
   }
 
   .layout {
