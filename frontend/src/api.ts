@@ -10,12 +10,17 @@ export interface NailAnalysisResponse {
 const DEFAULT_MIMO_BASE_URL =
   import.meta.env.VITE_MIMO_API_URL ?? "https://token-plan-cn.xiaomimimo.com/v1";
 export const DEFAULT_USER_PROMPT = [
-  "请从手型比例、肤色匹配、款式风格、日常适配度四个维度分析这组手部图与美甲图的搭配效果是否好看。",
-  "请给出明确结论，并提供可执行的优化建议（例如颜色、甲型、装饰复杂度、拍摄与护理建议）。"
+  "请分析人物照片中的目标人物穿上服饰照片中衣服后的搭配效果，从版型适配、色彩协调、风格一致性、日常适用性四个维度给出评价。",
+  "请给出明确结论，并提供可执行的优化建议（例如颜色、版型、层次搭配与拍摄建议）。"
 ].join("\n");
 
 const FIXED_OUTPUT_SCHEMA_PROMPT =
   "只返回 JSON，字段：score(0-100), verdict, summary, strengths(数组), suggestions(数组)。";
+const FIXED_TARGET_SUBJECT_PROMPT =
+  [
+    "图像身份约束：第一张图是“人物照片”，第二张图是“服饰照片”。",
+    "请务必将人物照片中的人物视为唯一目标人物，只提取服饰照片中的服饰款式，不要将服饰照片里出现的人当作目标人物。"
+  ].join("\n");
 
 interface MimoChatCompletionResponse {
   id?: string;
@@ -88,7 +93,7 @@ function parseAnalysisFromModelText(text: string): Omit<NailAnalysisResponse, "r
 
 function buildFinalPrompt(userPrompt?: string): string {
   const editablePrompt = userPrompt?.trim() || DEFAULT_USER_PROMPT;
-  return `${editablePrompt}\n${FIXED_OUTPUT_SCHEMA_PROMPT}`;
+  return `${editablePrompt}\n${FIXED_TARGET_SUBJECT_PROMPT}\n${FIXED_OUTPUT_SCHEMA_PROMPT}`;
 }
 
 export async function submitAnalysisDirectMimo(
@@ -124,8 +129,16 @@ export async function submitAnalysisDirectMimo(
           role: "user",
           content: [
             {
+              type: "text",
+              text: "【人物照片】如下："
+            },
+            {
               type: "image_url",
               image_url: { url: handImageUrl }
+            },
+            {
+              type: "text",
+              text: "【服饰照片】如下："
             },
             {
               type: "image_url",

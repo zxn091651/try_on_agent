@@ -59,8 +59,8 @@ export default function App() {
 
   return (
     <main className="container">
-      <h1>美甲穿戴审美分析</h1>
-      <p className="subtitle">上传手部照片与美甲图，调用 MIMO 大模型分析搭配是否好看。</p>
+      <h1>试穿分析Agent</h1>
+      <p className="subtitle">上传人物照片与服饰照片，调用 MIMO 大模型分析试穿搭配效果。</p>
 
       <section className="layout">
         <div className="left-column">
@@ -100,24 +100,24 @@ export default function App() {
             </label>
 
             <label>
-              手部照片
+          人物照片
               <input
                 type="file"
                 accept="image/*"
                 onChange={(event) => setHandImage(event.target.files?.[0] ?? null)}
               />
             </label>
-            {handPreview && <img src={handPreview} className="preview" alt="手部预览" />}
+        {handPreview && <img src={handPreview} className="preview" alt="人物照片预览" />}
 
             <label>
-              美甲照片
+          服饰照片
               <input
                 type="file"
                 accept="image/*"
                 onChange={(event) => setNailImage(event.target.files?.[0] ?? null)}
               />
             </label>
-            {nailPreview && <img src={nailPreview} className="preview" alt="美甲预览" />}
+        {nailPreview && <img src={nailPreview} className="preview" alt="服饰照片预览" />}
 
             <button type="submit" disabled={loading}>
               {loading ? "分析中..." : "分析"}
