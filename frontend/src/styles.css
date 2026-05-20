@@ -176,12 +176,12 @@ button:disabled {
 
 @media (max-width: 960px) {
   body::before {
-    top: 0;
+    top: -80px;
     left: 0;
     width: 100vw;
-    height: 100lvh;
-    background-size: contain;
-    background-position: center top;
+    height: calc(100vh + 160px);
+    background-size: cover;
+    background-position: center center;
   }
 
   .layout {
