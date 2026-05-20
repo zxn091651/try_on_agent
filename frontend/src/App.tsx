@@ -1,5 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import { submitTryOn } from "./api";
+import { FormEvent, useMemo, useState } from "react";
+import { NailAnalysisResponse, submitAnalysis } from "./api";
 
 function toPreviewUrl(file: File | null): string | null {
   return file ? URL.createObjectURL(file) : null;
@@ -8,43 +8,32 @@ function toPreviewUrl(file: File | null): string | null {
 export default function App() {
   const [handImage, setHandImage] = useState<File | null>(null);
   const [nailImage, setNailImage] = useState<File | null>(null);
+  const [apiKey, setApiKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resultSrc, setResultSrc] = useState<string | null>(null);
-  const [requestId, setRequestId] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<NailAnalysisResponse | null>(null);
 
   const handPreview = useMemo(() => toPreviewUrl(handImage), [handImage]);
   const nailPreview = useMemo(() => toPreviewUrl(nailImage), [nailImage]);
 
-  useEffect(() => {
-    return () => {
-      if (resultSrc) {
-        URL.revokeObjectURL(resultSrc);
-      }
-    };
-  }, [resultSrc]);
-
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
-    setMessage(null);
+    setAnalysis(null);
 
     if (!handImage || !nailImage) {
       setError("请先上传手部照片和美甲照片。");
       return;
     }
+    if (!apiKey.trim()) {
+      setError("请先输入 MIMO API Key。");
+      return;
+    }
 
     try {
       setLoading(true);
-      const payload = await submitTryOn(handImage, nailImage);
-      const objectUrl = URL.createObjectURL(payload.imageBlob);
-      if (resultSrc) {
-        URL.revokeObjectURL(resultSrc);
-      }
-      setResultSrc(objectUrl);
-      setRequestId(payload.requestId);
-      setMessage(payload.message ?? null);
+      const payload = await submitAnalysis(handImage, nailImage, apiKey.trim());
+      setAnalysis(payload);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "提交失败。");
     } finally {
@@ -54,10 +43,20 @@ export default function App() {
 
   return (
     <main className="container">
-      <h1>美甲试穿生成</h1>
-      <p className="subtitle">上传手部照片与目标美甲照片，生成试穿效果图。</p>
+      <h1>美甲穿戴审美分析</h1>
+      <p className="subtitle">上传手部照片与美甲图，调用 MIMO 模型分析搭配是否好看。</p>
 
       <form className="card" onSubmit={onSubmit}>
+        <label>
+          MIMO API Key（登录）
+          <input
+            type="password"
+            value={apiKey}
+            placeholder="tp-..."
+            onChange={(event) => setApiKey(event.target.value)}
+          />
+        </label>
+
         <label>
           手部照片
           <input
@@ -79,20 +78,33 @@ export default function App() {
         {nailPreview && <img src={nailPreview} className="preview" alt="美甲预览" />}
 
         <button type="submit" disabled={loading}>
-          {loading ? "生成中..." : "生成试穿图"}
+          {loading ? "分析中..." : "分析搭配效果"}
         </button>
       </form>
 
       {error && <p className="error">{error}</p>}
 
-      {resultSrc && (
+      {analysis && (
         <section className="result">
-          <h2>生成结果</h2>
-          {message && <p>{message}</p>}
-          <img src={resultSrc} className="result-image" alt="美甲试穿结果" />
-          <a href={resultSrc} download={`nail-tryon-${requestId ?? "result"}.png`}>
-            下载图片
-          </a>
+          <h2>分析结果</h2>
+          <p>
+            <strong>综合评分：</strong>
+            {analysis.score}/100
+          </p>
+          <p>
+            <strong>结论：</strong>
+            {analysis.verdict}
+          </p>
+          <p>{analysis.summary}</p>
+          <p>
+            <strong>优点：</strong>
+            {analysis.strengths.join("；")}
+          </p>
+          <p>
+            <strong>改进建议：</strong>
+            {analysis.suggestions.join("；")}
+          </p>
+          <p className="request-id">请求 ID: {analysis.requestId}</p>
         </section>
       )}
     </main>

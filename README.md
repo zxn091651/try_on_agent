@@ -1,14 +1,14 @@
 # Try On Gen
 
-美甲试穿网页项目，采用前后端分离架构：
+美甲穿戴审美分析网页项目，采用前后端分离架构：
 
 - 前端：React + Vite，部署到 GitHub Pages
-- 后端：Node.js + Express，接收上传图片并调用 Cursor Agent + 图像模型接口
+- 后端：Node.js + Express，接收上传图片并调用小米 MIMO 模型做搭配分析
 
 ## 项目结构
 
 - `frontend`：页面与上传交互
-- `backend`：`/api/tryon` 服务接口
+- `backend`：`/api/analyze` 服务接口
 - `.github/workflows/deploy-frontend.yml`：自动发布前端到 GitHub Pages
 
 ## 本地运行
@@ -35,8 +35,11 @@ npm install
 关键变量：
 
 - `VITE_API_BASE_URL`：后端地址
-- `CURSOR_API_KEY`：Cursor API Key（仅后端）
-- `IMAGE_MODEL_ENDPOINT`：你的图像生成模型接口
+- `MIMO_API_URL`：MIMO 接口根地址（推荐 `https://api.xiaomimimo.com/v1`）
+- `MIMO_MODEL`：模型名（如 `mimo-vl`）
+- `MIMO_MAX_COMPLETION_TOKENS`：最大输出 token（默认 `1024`）
+
+说明：MIMO API Key 不再保存在后端 `.env`，由前端用户输入后随请求传到后端。
 
 ### 4) 启动服务
 
@@ -52,19 +55,28 @@ npm run dev
 
 ## API 说明
 
-`POST /api/tryon`
+`POST /api/analyze`
 
 - Content-Type: `multipart/form-data`
 - 字段：
+  - `apiKey`
   - `handImage`
   - `nailImage`
 
 返回：
 
-- Body 直接返回 `image/*` 二进制
-- Header:
-  - `X-Request-Id`: 请求 ID
-  - `X-Model-Message`: URL 编码后的模型提示信息
+- JSON:
+
+```json
+{
+  "requestId": "uuid",
+  "score": 86,
+  "verdict": "整体好看",
+  "summary": "手部肤色与甲片主色匹配度较高。",
+  "strengths": ["配色统一", "指尖视觉延展自然"],
+  "suggestions": ["可把亮片密度降低 10%", "边缘可做更圆润过渡"]
+}
+```
 
 ## GitHub Pages 发布
 

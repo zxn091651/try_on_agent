@@ -1,21 +1,26 @@
-export interface TryOnImageResponse {
+export interface NailAnalysisResponse {
   requestId: string;
-  message?: string;
-  imageBlob: Blob;
+  score: number;
+  verdict: string;
+  summary: string;
+  strengths: string[];
+  suggestions: string[];
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
-export async function submitTryOn(handImage: File, nailImage: File): Promise<TryOnImageResponse> {
+export async function submitAnalysis(
+  handImage: File,
+  nailImage: File,
+  apiKey: string
+): Promise<NailAnalysisResponse> {
   const formData = new FormData();
   formData.append("handImage", handImage);
   formData.append("nailImage", nailImage);
+  formData.append("apiKey", apiKey);
 
-  const response = await fetch(`${API_BASE_URL}/api/tryon`, {
+  const response = await fetch(`${API_BASE_URL}/api/analyze`, {
     method: "POST",
-    headers: {
-      Accept: "image/*,application/json"
-    },
     body: formData
   });
 
@@ -32,14 +37,5 @@ export async function submitTryOn(handImage: File, nailImage: File): Promise<Try
     throw new Error(errorMessage);
   }
 
-  const requestId = response.headers.get("X-Request-Id") ?? crypto.randomUUID();
-  const encodedMessage = response.headers.get("X-Model-Message");
-  const message = encodedMessage ? decodeURIComponent(encodedMessage) : undefined;
-  const imageBlob = await response.blob();
-
-  if (!imageBlob.type.startsWith("image/")) {
-    throw new Error("服务返回成功但不是图片格式。");
-  }
-
-  return { requestId, message, imageBlob };
+  return (await response.json()) as NailAnalysisResponse;
 }
