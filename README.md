@@ -35,11 +35,14 @@ npm install
 关键变量：
 
 - `VITE_API_BASE_URL`：后端地址
+- `VITE_MIMO_API_URL`：前端直连 MiMo 的 base URL（实验模式）
 - `MIMO_API_URL`：MIMO 接口根地址（推荐 `https://api.xiaomimimo.com/v1`）
 - `MIMO_MODEL`：模型名（如 `mimo-vl`）
 - `MIMO_MAX_COMPLETION_TOKENS`：最大输出 token（默认 `1024`）
 
 说明：MIMO API Key 不再保存在后端 `.env`，由前端用户输入后随请求传到后端。
+
+补充：前端支持“直连 MiMo（实验）”模式，可能受浏览器 CORS 策略影响导致请求失败。生产建议仍使用后端代理模式。
 
 ### 4) 启动服务
 

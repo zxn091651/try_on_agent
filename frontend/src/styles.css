@@ -50,6 +50,13 @@ input[type="password"] {
   border-radius: 6px;
 }
 
+input[type="text"],
+select {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
 button {
   width: 180px;
   height: 40px;
