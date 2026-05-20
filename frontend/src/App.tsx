@@ -1,5 +1,5 @@
 import { FormEvent, useMemo, useState } from "react";
-import { NailAnalysisResponse, submitAnalysis, submitAnalysisDirectMimo } from "./api";
+import { NailAnalysisResponse, submitAnalysisDirectMimo } from "./api";
 
 function toPreviewUrl(file: File | null): string | null {
   return file ? URL.createObjectURL(file) : null;
@@ -9,7 +9,6 @@ export default function App() {
   const [handImage, setHandImage] = useState<File | null>(null);
   const [nailImage, setNailImage] = useState<File | null>(null);
   const [apiKey, setApiKey] = useState("");
-  const [requestMode, setRequestMode] = useState<"backend" | "direct">("direct");
   const [mimoBaseUrl, setMimoBaseUrl] = useState("https://token-plan-cn.xiaomimimo.com/v1");
   const [mimoModel, setMimoModel] = useState("mimo-v2.5");
   const [loading, setLoading] = useState(false);
@@ -35,16 +34,13 @@ export default function App() {
 
     try {
       setLoading(true);
-      const payload =
-        requestMode === "backend"
-          ? await submitAnalysis(handImage, nailImage, apiKey.trim())
-          : await submitAnalysisDirectMimo(
-              handImage,
-              nailImage,
-              apiKey.trim(),
-              mimoModel.trim() || "mimo-v2.5",
-              mimoBaseUrl.trim()
-            );
+      const payload = await submitAnalysisDirectMimo(
+        handImage,
+        nailImage,
+        apiKey.trim(),
+        mimoModel.trim() || "mimo-v2.5",
+        mimoBaseUrl.trim()
+      );
       setAnalysis(payload);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "提交失败。");
@@ -60,14 +56,6 @@ export default function App() {
 
       <form className="card" onSubmit={onSubmit}>
         <label>
-          请求模式
-          <select value={requestMode} onChange={(event) => setRequestMode(event.target.value as "backend" | "direct")}>
-            <option value="backend">后端代理（推荐）</option>
-            <option value="direct">前端直连 MiMo（实验）</option>
-          </select>
-        </label>
-
-        <label>
           MIMO API Key（登录）
           <input
             type="password"
@@ -77,25 +65,21 @@ export default function App() {
           />
         </label>
 
-        {requestMode === "direct" && (
-          <>
-            <label>
-              Base URL
-              <input
-                type="text"
-                value={mimoBaseUrl}
-                onChange={(event) => setMimoBaseUrl(event.target.value)}
-              />
-            </label>
-            <label>
-              Models
-              <select value={mimoModel} onChange={(event) => setMimoModel(event.target.value)}>
-                <option value="mimo-v2.5">mimo-v2.5</option>
-                <option value="mimo-v2-omni">mimo-v2-omni</option>
-              </select>
-            </label>
-          </>
-        )}
+        <label>
+          Base URL
+          <input
+            type="text"
+            value={mimoBaseUrl}
+            onChange={(event) => setMimoBaseUrl(event.target.value)}
+          />
+        </label>
+        <label>
+          Models
+          <select value={mimoModel} onChange={(event) => setMimoModel(event.target.value)}>
+            <option value="mimo-v2.5">mimo-v2.5</option>
+            <option value="mimo-v2-omni">mimo-v2-omni</option>
+          </select>
+        </label>
 
         <label>
           手部照片
@@ -118,7 +102,7 @@ export default function App() {
         {nailPreview && <img src={nailPreview} className="preview" alt="美甲预览" />}
 
         <button type="submit" disabled={loading}>
-          {loading ? "分析中..." : requestMode === "backend" ? "通过后端分析" : "直连 MiMo 分析"}
+          {loading ? "分析中..." : "分析"}
         </button>
       </form>
 
