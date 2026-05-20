@@ -9,7 +9,7 @@ export default function App() {
   const [handImage, setHandImage] = useState<File | null>(null);
   const [nailImage, setNailImage] = useState<File | null>(null);
   const [apiKey, setApiKey] = useState("");
-  const [requestMode, setRequestMode] = useState<"backend" | "direct">("backend");
+  const [requestMode, setRequestMode] = useState<"backend" | "direct">("direct");
   const [mimoBaseUrl, setMimoBaseUrl] = useState("https://token-plan-cn.xiaomimimo.com/v1");
   const [mimoModel, setMimoModel] = useState("mimo-v2.5");
   const [loading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ export default function App() {
   return (
     <main className="container">
       <h1>美甲穿戴审美分析</h1>
-      <p className="subtitle">上传手部照片与美甲图，调用 MIMO 模型分析搭配是否好看。</p>
+      <p className="subtitle">上传手部照片与美甲图，调用 MIMO 大模型分析搭配是否好看。</p>
 
       <form className="card" onSubmit={onSubmit}>
         <label>
@@ -80,7 +80,7 @@ export default function App() {
         {requestMode === "direct" && (
           <>
             <label>
-              MiMo Base URL
+              Base URL
               <input
                 type="text"
                 value={mimoBaseUrl}
@@ -88,8 +88,11 @@ export default function App() {
               />
             </label>
             <label>
-              MiMo Model
-              <input type="text" value={mimoModel} onChange={(event) => setMimoModel(event.target.value)} />
+              Models
+              <select value={mimoModel} onChange={(event) => setMimoModel(event.target.value)}>
+                <option value="mimo-v2.5">mimo-v2.5</option>
+                <option value="mimo-v2-omni">mimo-v2-omni</option>
+              </select>
             </label>
           </>
         )}
@@ -144,6 +147,11 @@ export default function App() {
           <p className="request-id">请求 ID: {analysis.requestId}</p>
         </section>
       )}
+
+      <footer className="footer-meta">
+        <p>有效期至 2026-06-16 23:59</p>
+        <p>Made by zxn, 2026-05-20</p>
+      </footer>
     </main>
   );
 }
