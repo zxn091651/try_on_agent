@@ -13,12 +13,16 @@ body {
   min-height: 100vh;
   background-color: #f8fafc;
   position: relative;
+  overflow-x: hidden;
 }
 
 body::before {
   content: "";
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-image:
     linear-gradient(rgba(248, 250, 252, 0.68), rgba(248, 250, 252, 0.68)),
     url("../../assets/background.png");
@@ -27,6 +31,8 @@ body::before {
   background-repeat: no-repeat;
   pointer-events: none;
   z-index: 0;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .container {
@@ -164,6 +170,12 @@ button:disabled {
 }
 
 @media (max-width: 960px) {
+  body::before {
+    height: 100svh;
+    background-size: 100% 100%;
+    background-position: center top;
+  }
+
   .layout {
     grid-template-columns: 1fr;
   }
