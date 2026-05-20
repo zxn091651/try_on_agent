@@ -125,11 +125,6 @@ export default function App() {
           </form>
 
           {error && <p className="error">{error}</p>}
-
-          <footer className="footer-meta">
-            <p>有效期至 2026-06-16 23:59</p>
-            <p>Made by zxn, 2026-05-20</p>
-          </footer>
         </div>
 
         <section className="result right-column">
@@ -159,6 +154,11 @@ export default function App() {
           )}
         </section>
       </section>
+
+      <footer className="footer-meta">
+        <p>有效期至 2026-06-16 23:59</p>
+        <p>Made by zxn, 2026-05-20</p>
+      </footer>
     </main>
   );
 }
