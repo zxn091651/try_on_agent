@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/try_on_gen/"
+  base: "/try_on_agent/"
 });

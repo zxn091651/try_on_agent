@@ -1,4 +1,4 @@
-# Try On Gen
+# Try On Agent
 
 美甲穿戴审美分析网页项目，采用前后端分离架构：
 
@@ -87,4 +87,4 @@ npm run dev
 1. 推送代码到 `main` 分支
 2. 在仓库设置中将 Pages Source 设为 **GitHub Actions**
 3. 在仓库 Variables 中配置 `VITE_API_BASE_URL`
-4. 访问 `https://zxn091651.github.io/try_on_gen/`
+4. 访问 `https://zxn091651.github.io/try_on_agent/`
