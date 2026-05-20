@@ -171,8 +171,8 @@ button:disabled {
 
 @media (max-width: 960px) {
   body::before {
-    height: 100vh;
-    height: 100lvh;
+    top: -12lvh;
+    height: calc(100lvh + 24lvh);
     background-size: cover;
     background-position: center center;
   }
